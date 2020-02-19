@@ -1,16 +1,17 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e # Errors are fatal
 set -x # Show commands
 
 date
 
-echo Downloading WebKit
+echo "Downloading WebKit"
 pushd $INDEX_ROOT
 if [ -d "WebKit" ]
 then
     echo "Found pre-existing folder; skipping re-download."
 else
+    echo "Cloning webkit"
     git clone git://git.webkit.org/WebKit WebKit
 fi
 popd
