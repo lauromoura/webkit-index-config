@@ -1,43 +1,42 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # set -e # Errors are fatal
-set -x # Show commands
+# set -x # Show commands
 
 date
 
-# Update dependencies.
-# yes | $FILES_ROOT/Tools/gtk/install-dependencies
-# 
-# # Install or update jhbuild.
-# if [[ -d "$FILES_ROOT/WebKitBuild/DependenciesGTK" ]]; then
-# 	$(JHBUILD_RUN_AS_ROOT=1 $FILES_ROOT/Tools/Scripts/update-webkitgtk-libs)
-# else
-# 	$(JHBUILD_RUN_AS_ROOT=1 $FILES_ROOT/Tools/jhbuild/jhbuild --gtk update)
-# fi
+# Clang is required.
+CC=${CC:-clang-8}
+CXX=${CXX:-clang++-8}
 
-# Add the special clang flags.
-# eval "$($MOZSEARCH_PATH/scripts/indexer-setup.py)"
+# Default WebKit port.
+PORT=${PORT:-GTK}
 
-# export CC="clang -Xclang -load -Xclang /root/mozsearch/clang-plugin/libclang-index-plugin.so -Xclang -add-plugin -Xclang mozsearch-index -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/webkit/WebKit/ -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/analysis -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/webkit/WebKit/target/ -Xclang -fparse-all-comments"
-# export CXX="clang++ -Xclang -load -Xclang /root/mozsearch/clang-plugin/libclang-index-plugin.so -Xclang -add-plugin -Xclang mozsearch-index -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/webkit/WebKit/ -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/analysis -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/webkit/WebKit/target/ -Xclang -fparse-all-comments"
-# export RUSTFLAGS="-Zsave-analysis"
+# Obtain the special clang flags.
+eval "$($MOZSEARCH_PATH/scripts/indexer-setup.py)"
 
-# cmake $FILES_ROOT -DPORT=JSC -DCMAKE_BUILD_TYPE=Debug
-# cmake /root/webkit-index/webkit/WebKit/ -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Debug -DPORT=JSCOnly
-# cmake $FILES_ROOT -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_BUILD_TYPE=Debug -DPORT=JSCOnly
+# C Flags are encoded into CC var.
+# Remove prefix (clang) and store flags into C_FLAGS.
+C_FLAGS=${CC:6}
 
-echo "### Build"
+# CXX Flags are encoded into CXX var.
+# Remove prefix (clang++) and store flags into CXX_FLAGS.
+CXX_FLAGS=${CXX:8}
+
+$FILES_ROOT/Tools/Scripts/update-webkitgtk-libs
 
 mkdir -p $OBJDIR
 cd $OBJDIR
 
 cmake $FILES_ROOT \
-    -DCMAKE_C_COMPILER="clang" \
-    -DCMAKE_CXX_COMPILER="clang++" \
-    -DCMAKE_C_FLAGS="-Xclang -load -Xclang /root/mozsearch/clang-plugin/libclang-index-plugin.so -Xclang -add-plugin -Xclang mozsearch-index -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/webkit/WebKit/ -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/analysis -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/webkit/WebKit/target/ -Xclang -fparse-all-comments" \
-    -DCMAKE_CXX_FLAGS="-Xclang -load -Xclang /root/mozsearch/clang-plugin/libclang-index-plugin.so -Xclang -add-plugin -Xclang mozsearch-index -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/webkit/WebKit/ -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/analysis -Xclang -plugin-arg-mozsearch-index -Xclang /root/jsc-index/webkit/WebKit/target/ -Xclang -fparse-all-comments" \
+    -DCMAKE_C_COMPILER="$CC" \
+    -DCMAKE_CXX_COMPILER="$CXX" \
+    -DCMAKE_C_FLAGS="$C_FLAGS" \
+    -DCMAKE_CXX_FLAGS="$CXX_FLAGS" \
+    -DUSE_WPE_RENDERER=OFF \
+    -DENABLE_BUBBLEWRAP_SANDBOX=OFF \
     -DCMAKE_BUILD_TYPE=Debug \
-    -DPORT=JSCOnly
+    -DPORT=$PORT
 
 make -j$(nproc)
 cd -
