@@ -5,10 +5,6 @@
 
 date
 
-# Clang is required.
-CC=${CC:-clang-8}
-CXX=${CXX:-clang++-8}
-
 # Default WebKit port.
 PORT=${PORT:-GTK}
 
