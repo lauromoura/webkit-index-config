@@ -14,11 +14,14 @@ eval "$($MOZSEARCH_PATH/scripts/indexer-setup.py)"
 # C Flags are encoded into CC var.
 # Remove prefix (clang) and store flags into C_FLAGS.
 C_FLAGS=${CC:6}
+CC=${CC:0:5}
 
 # CXX Flags are encoded into CXX var.
 # Remove prefix (clang++) and store flags into CXX_FLAGS.
 CXX_FLAGS=${CXX:8}
+CXX=${CXX:0:7}
 
+$FILES_ROOT/Tools/gtk/install-dependencies
 $FILES_ROOT/Tools/Scripts/update-webkitgtk-libs
 
 mkdir -p $OBJDIR
