@@ -21,7 +21,9 @@ CC=${CC:0:5}
 CXX_FLAGS=${CXX:8}
 CXX=${CXX:0:7}
 
-$FILES_ROOT/Tools/gtk/install-dependencies
+if [[ $EUID -eq 0 ]]; then
+	$FILES_ROOT/Tools/gtk/install-dependencies
+fi
 $FILES_ROOT/Tools/Scripts/update-webkitgtk-libs
 
 mkdir -p $OBJDIR
