@@ -17,6 +17,7 @@ WEB_SERVER_RUN=$HOME/mozsearch/infrastructure/web-server-run.sh
 
 WEBKIT_INDEX_CONFIG=$HOME/webkit-index-config
 WEBKIT_INDEX=$HOME/webkit-index
+WEBKIT_DIR=$WEBKIT_INDEX/webkit/WebKit
 
 function log {
 	local msg="$1"
@@ -53,7 +54,6 @@ function indexer_setup {
 	fi
 }
 
-# Indexer run.
 function indexer_run {
 	$INDEXER_RUN $WEBKIT_INDEX_CONFIG $WEBKIT_INDEX
 	if [[ $? != 0 ]]; then
@@ -81,6 +81,23 @@ function web_server_run {
 	fi
 }
 
+function revision
+{
+	cd $WEBKIT_DIR
+	revision=$(git log -1 | tail -1 | egrep -o "@[0-9]+" | tr -d '@')
+	echo "r$revision"
+}
+
+function last_build
+{
+	cd $WEBKIT_DIR
+	line=$(git log -1 --pretty="format:%h %aI %s")
+	revision=$(revision)
+	echo "$revision $line" | tee $HOME/.last_build
+}
+
+# Main.
+
 if [[ $# -eq 0 ]]; then
 	indexer_setup
 	indexer_run
@@ -103,3 +120,5 @@ else
 		esac
 	done
 fi
+
+last_build
