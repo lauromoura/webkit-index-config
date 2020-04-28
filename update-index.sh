@@ -26,6 +26,18 @@ fi
 
 LOG=$LOG_DIR/log
 
+LOCK="$HOME/.webkit-search-lock"
+if [[ ! -f "$LOCK" ]]; then
+	touch "$LOCK"
+fi
+
+function cleanup
+{
+	rm -f "$LOCK"
+}
+
+trap cleanup SIGHUP SIGTERM
+
 export KEEP_WORKING=1
 
 INDEXER_SETUP=$HOME/mozsearch/infrastructure/indexer-setup.sh
@@ -165,3 +177,5 @@ else
 		esac
 	done
 fi
+
+cleanup
