@@ -27,7 +27,10 @@ fi
 LOG=$LOG_DIR/log
 
 LOCK="$HOME/.webkit-search-lock"
-if [[ ! -f "$LOCK" ]]; then
+if [[ -f "$LOCK" ]]; then
+	# Nothing to do, job is in process.
+    exit 0
+else
 	touch "$LOCK"
 fi
 
