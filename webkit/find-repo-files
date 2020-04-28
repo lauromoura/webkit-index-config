@@ -41,12 +41,6 @@ for line in lines:
     files.append(path + '\n')
 
     (_, ext) = os.path.splitext(path)
-    if ext == '.idl':
-        # This file causes problems because an IDL file of the same
-        # name exists in browser/, android/, and other places, and
-        # they all end up in dist/include.
-        if not path.endswith('nsIShellService.idl'):
-            idl.append(path + '\n')
 
     if ext == '.ipdl' or ext == '.ipdlh':
         if 'ipc/ipdl/test' in path or 'accessible/ipc/win' in path or 'widget/win' in path:
