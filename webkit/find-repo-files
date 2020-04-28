@@ -42,9 +42,6 @@ for line in lines:
 
     (_, ext) = os.path.splitext(path)
 
-    if 'JSTests' in path or 'js/src/tests' in path or 'jit-test' in path:
-        continue
-
     if ext in ['.js', '.jsm', '.xml', '.xul', '.inc']:
         js.append(path + '\n')
 
