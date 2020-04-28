@@ -42,15 +42,6 @@ for line in lines:
 
     (_, ext) = os.path.splitext(path)
 
-    if ext == '.ipdl' or ext == '.ipdlh':
-        if 'ipc/ipdl/test' in path or 'accessible/ipc/win' in path or 'widget/win' in path:
-            continue
-
-        ipdl.append(path + '\n')
-
-        dir = '/'.join(elts[:-1])
-        ipdl_dirs[dir] = True
-
     if 'JSTests' in path or 'js/src/tests' in path or 'jit-test' in path:
         continue
 
