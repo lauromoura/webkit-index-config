@@ -39,7 +39,7 @@ function cleanup
    rm -f "$LOCK"
 }
 
-trap cleanup SIGHUP SIGTERM
+trap cleanup SIGHUP SIGTERM EXIT
 
 export KEEP_WORKING=1
 
@@ -180,5 +180,3 @@ else
       esac
    done
 fi
-
-cleanup
