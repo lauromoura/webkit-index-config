@@ -1,5 +1,23 @@
 #!/usr/bin/env bash
 
+usage() {
+	local exit_code="${1:0}"
+
+	local program_name=$(basename "$0")
+	echo "$program_name [STEP]"
+	echo "Runs a step of the indexing process. If not step is set, all steps are run."
+	echo ""
+	echo "ARGUMENTS:"
+	echo -e "\tSTEP\tindexer-setup, indexer-run, web-server-setup, web-server-run."
+	exit $exit_code
+}
+
+for each in "$@"; do
+	if [[ "$each" == "-h" || "$each" == "--help" ]]; then
+		usage
+	fi
+done
+
 LOG_DIR=/var/log/webkit-indexer
 if [[ ! -d "$LOG_DIR" ]]; then
 	echo "Couldn't find log directory : $LOG_DIR"
@@ -96,12 +114,36 @@ function last_build
 	echo "$revision $line" | tee $HOME/.last_build
 }
 
-# Main.
+function format_seconds
+{
+    local seconds="$1"
 
-if [[ $# -eq 0 ]]; then
+    local h=$((seconds / 3600))
+    local m=$((seconds / 60 % 60))
+    local s=$((seconds % 60))
+
+    printf '%02d:%02d:%02d' $h $m $s
+}
+
+function full_indexing
+{
+	local start=$(date +%s)
+
 	indexer_setup
 	indexer_run
 	web_server_run
+    last_build
+
+	local end=$(date +%s)
+	local delta=$((end - start))
+	local time=$(format_seconds "$delta")
+	success "Total time: $time"
+}
+
+# Main.
+
+if [[ $# -eq 0 ]]; then
+	full_indexing
 else
 	for each in "$@"; do
 		case "$each" in
@@ -117,8 +159,9 @@ else
 			"web-server-run")
 				web_server_run
 			;;
+            "timestamp")
+				last_build
+			;;
 		esac
 	done
 fi
-
-last_build
