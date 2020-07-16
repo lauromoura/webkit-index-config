@@ -1,5 +1,6 @@
 [Unit]
 Description=WebKitSearch Web Router (%i)
+Wants=multi-user.target
 
 [Service]
 Type=simple
@@ -9,7 +10,6 @@ User=%i
 Group=%i
 WorkingDirectory=/home/%i
 RuntimeDirectory=%i
-Wants=multi-user.target
 EnvironmentFile=/home/%i/environment
 
 # The router spawns codesearch
