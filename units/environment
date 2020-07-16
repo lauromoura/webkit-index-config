@@ -1,0 +1,8 @@
+# Paths relative to working directory
+
+CONFIG=webkit-index-config
+DOCROOT=docroot
+INDEX=webkit-index
+# Avoid resetting the cache
+KEEP_WORKING=1
+MOZSEARCH=mozsearch

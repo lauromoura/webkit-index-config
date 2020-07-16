@@ -1,0 +1,15 @@
+[Unit]
+Description=WebKitSearch Web Server (%i)
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1s
+User=%i
+Group=%i
+WorkingDirectory=/home/%i
+RuntimeDirectory=%i
+Wants=multi-user.target
+EnvironmentFile=/home/%i/environment
+
+ExecStart=/home/%i/${MOZSEARCH}/tools/target/release/web-server /home/%i/${CONFIG}/config.json /home/%i/${DOCROOT}/status.txt

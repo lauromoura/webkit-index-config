@@ -1,0 +1,16 @@
+[Unit]
+Description=WebKitSearch Indexer Run (%i)
+
+[Service]
+Type=oneshot
+User=%i
+Group=%i
+WorkingDirectory=/home/%i
+RuntimeDirectory=%i
+Wants=multi-user.target
+Environment=KEEP_WORKING=1
+Requires=webkit-search-indexer-setup@%i.service
+After=webkit-search-indexer-setup@%i.service
+EnvironmentFile=/home/%i/environment
+
+ExecStart=/home/%i/${MOZSEARCH}/infrastructure/indexer-run.sh ${CONFIG} {INDEX}

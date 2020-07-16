@@ -1,0 +1,13 @@
+[Unit]
+Description=WebKitSearch Indexer Setup (%i)
+
+[Service]
+Type=oneshot
+User=%i
+Group=%i
+WorkingDirectory=/home/%i
+RuntimeDirectory=%i
+Wants=multi-user.target
+EnvironmentFile=/home/%i/environment
+
+ExecStart=/home/%i/${MOZSEARCH}/infrastructure/indexer-setup.sh ${CONFIG} config.json ${INDEX}
